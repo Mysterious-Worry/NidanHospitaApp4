@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Main Projects/NidanHospitaApp4/app/src/main/res/drawable/btn_bg.xml" value="0.2405" />
+        <entry key="..\:/Main Projects/NidanHospitaApp4/app/src/main/res/drawable/ic_baseline_list_24.xml" value="0.2405" />
+        <entry key="..\:/Main Projects/NidanHospitaApp4/app/src/main/res/drawable/ic_baseline_person_search_24.xml" value="0.2405" />
         <entry key="..\:/Main Projects/NidanHospitaApp4/app/src/main/res/layout/activity_login.xml" value="0.234375" />
         <entry key="..\:/Main Projects/NidanHospitaApp4/app/src/main/res/layout/activity_main.xml" value="0.234375" />
       </map>
