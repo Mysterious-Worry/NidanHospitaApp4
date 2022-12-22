@@ -1,17 +1,22 @@
 package in.co.okservices.nidanhospitaapp4;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import in.co.okservices.nidanhospitaapp4.custom_packages.MyDatabaseHelper;
+import in.co.okservices.nidanhospitaapp4.data_models.*;
+import in.co.okservices.nidanhospitaapp4.data_adapters.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     TextView date_txt, patient_count_txt, total_amount_txt;
     RecyclerView recycler_view;
     MyDatabaseHelper myDB;
+    ArrayList<patient_model> dataHolder;
+    Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +37,11 @@ public class MainActivity extends AppCompatActivity {
         myDB = new MyDatabaseHelper(MainActivity.this);
         initViews();
         insertDayData();
+
+        recycler_view.setLayoutManager(new LinearLayoutManager(this));
+        cursor = new MyDatabaseHelper(this).readPatientData();
+        dataHolder = new ArrayList<>();
+        loadDataInDataHolder();
     }
 
     private void initViews(){
@@ -47,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
             patient_count_txt = (TextView)findViewById(R.id.patient_count_txt);
             total_amount_txt = (TextView)findViewById(R.id.total_amount_txt);
             recycler_view = (RecyclerView)findViewById(R.id.recycler_view);
-
         } catch (Exception ex){
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -70,5 +81,30 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Data added successfully.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void loadDataInDataHolder()
+    // arraylist block
+    {
+        try {
+            while (cursor.moveToNext()) {
+                patient_model obj = new patient_model(
+                        cursor.getString(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getString(4),
+                        cursor.getString(5),
+                        cursor.getString(6),
+                        cursor.getString(7),
+                        cursor.getString(8)
+                );
+                dataHolder.add(obj);
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+        }
+        patient_adapter adapter = new patient_adapter(dataHolder, this);
+        recycler_view.setAdapter(adapter);
     }
 }

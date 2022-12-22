@@ -159,7 +159,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-
+    public Cursor readPatientData(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String qry = "SELECT * FROM "+PATIENT_TABLE+" WHERE "+COLUMN_DATE+" = '" + getDate() + "'";
+        Cursor cursor = db.rawQuery(qry,null);
+        return  cursor;
+    }
 
     public String getDate(){
         Calendar calendar = Calendar.getInstance();
