@@ -9,6 +9,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Objects;
+
+import in.co.okservices.nidanhospitaapp4.custom_packages.MyDatabaseHelper;
+
 public class MainActivity extends AppCompatActivity {
 
     EditText search_person_txt;
@@ -17,12 +21,15 @@ public class MainActivity extends AppCompatActivity {
             paper_valid_emergency_txt, discount_count_txt, cancel_txt;
     TextView date_txt, patient_count_txt, total_amount_txt;
     RecyclerView recycler_view;
+    MyDatabaseHelper myDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        myDB = new MyDatabaseHelper(MainActivity.this);
         initViews();
+        insertDayData();
     }
 
     private void initViews(){
@@ -40,8 +47,28 @@ public class MainActivity extends AppCompatActivity {
             patient_count_txt = (TextView)findViewById(R.id.patient_count_txt);
             total_amount_txt = (TextView)findViewById(R.id.total_amount_txt);
             recycler_view = (RecyclerView)findViewById(R.id.recycler_view);
+
         } catch (Exception ex){
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void insertDayData(){
+        boolean ifRecordExists = myDB.checkIfRecordExist(myDB.getDate());
+        if(!ifRecordExists){
+            String dataAdded = myDB.addRawData();
+            if(Objects.equals(dataAdded, "Failed")){
+                Toast.makeText(this, "Failed, adding patient data.", Toast.LENGTH_SHORT).show();
+            } else if(Objects.equals(dataAdded, "Successfully inserted")){
+                Toast.makeText(this, "Data added successfully.", Toast.LENGTH_SHORT).show();
+            }
+
+            String dayDataAdded = myDB.addDayData();
+            if(Objects.equals(dayDataAdded, "Failed")){
+                Toast.makeText(this, "Failed, adding patient data.", Toast.LENGTH_SHORT).show();
+            } else if(Objects.equals(dayDataAdded, "Successfully inserted")){
+                Toast.makeText(this, "Data added successfully.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
