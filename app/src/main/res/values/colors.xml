@@ -8,4 +8,12 @@
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="normal">#C1FFB6</color>
+    <color name="emergency">#FFBBBB</color>
+    <color name="paper_valid">#FFEED5</color>
+    <color name="paper_valid_emergency">#C6FFED</color>
+    <color name="discount">#C9D0FF</color>
+    <color name="cancel">#FFCCFD</color>
+    <color name="add_amount">#FFDACB</color>
 </resources>

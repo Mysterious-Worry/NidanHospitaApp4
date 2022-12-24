@@ -33,6 +33,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_TIME = "time";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_AGE = "age";
+    private static final String COLUMN_AMOUNT = "amount";
 
     private static final String COLUMN_NORMAL = "normal";
     private static final String COLUMN_EMERGENCY = "emergency";
@@ -59,6 +60,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_COLOR + " TEXT, " +
                 COLUMN_DATE + " TEXT, " +
                 COLUMN_TIME + " TEXT, " +
+                COLUMN_AMOUNT + " INT, " +
                 COLUMN_NAME + " TEXT, " +
                 COLUMN_AGE + " INTEGER);";
 
@@ -102,9 +104,10 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 pcv.put(COLUMN_SR_NO,i);
                 pcv.put(COLUMN_CHECKED,"no");
                 pcv.put(COLUMN_TYPE, "none");
-                pcv.put(COLUMN_COLOR, "#000000");
+                pcv.put(COLUMN_COLOR, Integer.parseInt(String.valueOf(R.color.white)));
                 pcv.put(COLUMN_DATE, this.getDate());
                 pcv.put(COLUMN_TIME, "--:--:-- --");
+                pcv.put(COLUMN_AMOUNT, 0);
                 pcv.put(COLUMN_NAME, "--");
                 pcv.put(COLUMN_AGE, 0);
                 res = db.insert(PATIENT_TABLE  ,null,pcv);
@@ -178,5 +181,30 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Date currentTime = calendar.getTime();
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss a");
         return dateFormat.format(currentTime);
+    }
+
+    public void updatePatientDetail(int _id, int sr_no, String type, int color, String name, String age, int amount){
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues cv=new ContentValues();
+        try{
+            cv.put(COLUMN_SR_NO,sr_no);
+            cv.put(COLUMN_CHECKED,"yes");
+            cv.put(COLUMN_TYPE, type);
+            cv.put(COLUMN_COLOR, color);
+            cv.put(COLUMN_DATE, this.getDate());
+            cv.put(COLUMN_TIME, this.getTime());
+            cv.put(COLUMN_AMOUNT, amount);
+            cv.put(COLUMN_NAME, name);
+            cv.put(COLUMN_AGE, age);
+            db.update(PATIENT_TABLE, cv, COLUMN_ID + "=?", new String[]{String.valueOf(_id)});
+        } catch (Exception ex){
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void updateDayRecord(String type, int amount){
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues cv=new ContentValues();
+
     }
 }

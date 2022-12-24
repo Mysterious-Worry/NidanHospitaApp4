@@ -1,9 +1,9 @@
 package in.co.okservices.nidanhospitaapp4.data_models;
 
 public class patient_model {
-    String _id, sr_no, checked, type, color, date, time, name, age;
+    String _id, sr_no, checked, type, color, date, time, amount, name, age;
 
-    public patient_model(String _id, String sr_no, String checked, String type, String color, String date, String time, String name, String age) {
+    public patient_model(String _id, String sr_no, String checked, String type, String color, String date, String time, String amount,String name, String age) {
         this._id = _id;
         this.sr_no = sr_no;
         this.checked = checked;
@@ -69,6 +69,14 @@ public class patient_model {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
     }
 
     public String getName() {

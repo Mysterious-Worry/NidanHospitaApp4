@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -21,7 +22,7 @@ import in.co.okservices.nidanhospitaapp4.data_adapters.*;
 public class MainActivity extends AppCompatActivity {
 
     EditText search_person_txt;
-    ImageButton search_person_btn, see_day_records;
+    ImageButton search_person_btn, see_day_records, refresh_btn;
     TextView normal_count_txt, emergency_count_txt, normal_paper_valid_count_txt,
             paper_valid_emergency_txt, discount_count_txt, cancel_txt;
     TextView date_txt, patient_count_txt, total_amount_txt;
@@ -42,6 +43,16 @@ public class MainActivity extends AppCompatActivity {
         cursor = new MyDatabaseHelper(this).readPatientData();
         dataHolder = new ArrayList<>();
         loadDataInDataHolder();
+
+        refresh_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recycler_view.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                cursor = new MyDatabaseHelper(MainActivity.this).readPatientData();
+                dataHolder = new ArrayList<>();
+                loadDataInDataHolder();
+            }
+        });
     }
 
     private void initViews(){
@@ -59,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             patient_count_txt = (TextView)findViewById(R.id.patient_count_txt);
             total_amount_txt = (TextView)findViewById(R.id.total_amount_txt);
             recycler_view = (RecyclerView)findViewById(R.id.recycler_view);
+            refresh_btn = (ImageButton)findViewById(R.id.refresh_btn);
         } catch (Exception ex){
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -97,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
                         cursor.getString(5),
                         cursor.getString(6),
                         cursor.getString(7),
-                        cursor.getString(8)
+                        cursor.getString(8),
+                        cursor.getString(9)
                 );
                 dataHolder.add(obj);
             }
