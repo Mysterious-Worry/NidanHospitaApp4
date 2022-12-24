@@ -39,7 +39,7 @@
                 android:ems="10"
                 android:fontFamily="@font/ubuntu"
                 android:hint="Person's Sr No."
-                android:inputType="textPersonName"
+                android:inputType="number"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:layout_margin="15dp"
@@ -60,7 +60,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_margin="10dp">
+            android:layout_margin="10dp"
+            android:background="#EAEAEA">
 
         </androidx.recyclerview.widget.RecyclerView>
 

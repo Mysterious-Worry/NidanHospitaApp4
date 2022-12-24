@@ -171,10 +171,17 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return  cursor;
     }
 
+    public Cursor readOnePatientData(String srno){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String qry = "SELECT * FROM "+PATIENT_TABLE+" WHERE "+COLUMN_DATE+" = '" + getDate() + "' AND " + COLUMN_SR_NO + " ='" + srno+"'";
+        Cursor cursor = db.rawQuery(qry,null);
+        return  cursor;
+    }
+
     public String getDate(){
         Calendar calendar = Calendar.getInstance();
         Date currentTime = calendar.getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yy:MM:dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
         return dateFormat.format(currentTime);
     }
 
@@ -229,5 +236,11 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             rv = (int) cursor.getLong(cursor.getColumnIndex(column_name));
         }
         return rv;
+    }
+
+    public Cursor fetchDayData(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + DAY_RECORD_TABLE;
+        return db.rawQuery(query, null);
     }
 }

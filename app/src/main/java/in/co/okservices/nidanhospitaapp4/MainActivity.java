@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -53,6 +54,23 @@ public class MainActivity extends AppCompatActivity {
                 cursor = new MyDatabaseHelper(MainActivity.this).readPatientData();
                 dataHolder = new ArrayList<>();
                 loadDataInDataHolder();
+            }
+        });
+
+        search_person_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cursor = new MyDatabaseHelper(MainActivity.this).readOnePatientData(search_person_txt.getText().toString());
+                dataHolder = new ArrayList<>();
+                loadDataInDataHolder();
+            }
+        });
+
+        see_day_records.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, DayRecordActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -124,15 +142,15 @@ public class MainActivity extends AppCompatActivity {
         recycler_view.setAdapter(adapter);
 
         try {
-            normal_count_txt.setText(String.valueOf(myDB.senderCell("normal")));
-            emergency_count_txt.setText(String.valueOf(myDB.senderCell("emergency")));
-            normal_paper_valid_count_txt.setText(String.valueOf(myDB.senderCell("paper_valid")));
-            paper_valid_emergency_txt.setText(String.valueOf(myDB.senderCell("emergency_paper_valid")));
-            discount_count_txt.setText(String.valueOf(myDB.senderCell("discount")));
-            cancel_txt.setText(String.valueOf(myDB.senderCell("cancel")));
-            add_amount_txt.setText(String.valueOf(myDB.senderCell("add_amount")));
-            total_amount_txt.setText(String.valueOf(myDB.senderCell("total_amount_collected")));
-            patient_count_txt.setText(String.valueOf(myDB.senderCell("total_patients")));
+            normal_count_txt.setText("N: " + String.valueOf(myDB.senderCell("normal")));
+            emergency_count_txt.setText("E: " + String.valueOf(myDB.senderCell("emergency")));
+            normal_paper_valid_count_txt.setText("PV: " + String.valueOf(myDB.senderCell("paper_valid")));
+            paper_valid_emergency_txt.setText("EPV: " + String.valueOf(myDB.senderCell("emergency_paper_valid")));
+            discount_count_txt.setText("D: " + String.valueOf(myDB.senderCell("discount")));
+            cancel_txt.setText("C: " + String.valueOf(myDB.senderCell("cancel")));
+            add_amount_txt.setText("AA: " + String.valueOf(myDB.senderCell("add_amount")));
+            total_amount_txt.setText("Rs: " + String.valueOf(myDB.senderCell("total_amount_collected")));
+            patient_count_txt.setText("TPV: " + String.valueOf(myDB.senderCell("total_patients")));
             date_txt.setText(String.valueOf(myDB.getDate()));
         } catch (Exception ex){
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
