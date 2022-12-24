@@ -1,5 +1,6 @@
 package in.co.okservices.nidanhospitaapp4.custom_packages;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import java.io.DataInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -35,6 +35,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_AGE = "age";
     private static final String COLUMN_AMOUNT = "amount";
 
+    private static final String COLUMN_TOTAL_PATIENTS = "total_patients";
     private static final String COLUMN_NORMAL = "normal";
     private static final String COLUMN_EMERGENCY = "emergency";
     private static final String COLUMN_PAPER_VALID = "paper_valid";
@@ -67,6 +68,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         String dayRecordTableQuery = "CREATE TABLE " + DAY_RECORD_TABLE +
                 " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_DATE + " TEXT, " +
+                COLUMN_TOTAL_PATIENTS + " INTEGER, " +
                 COLUMN_NORMAL + " INTEGER, " +
                 COLUMN_EMERGENCY + " INTEGER, " +
                 COLUMN_PAPER_VALID + " INTEGER, " +
@@ -104,7 +106,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 pcv.put(COLUMN_SR_NO,i);
                 pcv.put(COLUMN_CHECKED,"no");
                 pcv.put(COLUMN_TYPE, "none");
-                pcv.put(COLUMN_COLOR, Integer.parseInt(String.valueOf(R.color.white)));
+                pcv.put(COLUMN_COLOR, Integer.parseInt(String.valueOf(R.color.white2)));
                 pcv.put(COLUMN_DATE, this.getDate());
                 pcv.put(COLUMN_TIME, "--:--:-- --");
                 pcv.put(COLUMN_AMOUNT, 0);
@@ -206,5 +208,26 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues cv=new ContentValues();
 
+        int total_amount = senderCell(COLUMN_TOTAL_AMOUNT_COLLECTED) + amount;
+        int type_count = senderCell(type) + 1;
+        int total_patients = senderCell(COLUMN_TOTAL_PATIENTS) + 1;
+
+        cv.put(COLUMN_TOTAL_AMOUNT_COLLECTED, total_amount);
+        cv.put(type, type_count);
+        cv.put(COLUMN_TOTAL_PATIENTS, total_patients);
+
+        db.update(DAY_RECORD_TABLE, cv, COLUMN_DATE + "=?", new String[]{String.valueOf(getDate())});
+    }
+
+
+    @SuppressLint("Range")
+    public int senderCell(String column_name){
+        int rv = -1;
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("select " + column_name + " from " + DAY_RECORD_TABLE + " where " + COLUMN_DATE + "=?", new String[]{getDate()});
+        if(cursor.moveToNext()){
+            rv = (int) cursor.getLong(cursor.getColumnIndex(column_name));
+        }
+        return rv;
     }
 }

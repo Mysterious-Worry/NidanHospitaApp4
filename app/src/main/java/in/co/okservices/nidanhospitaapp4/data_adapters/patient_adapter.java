@@ -202,7 +202,7 @@ public class patient_adapter extends RecyclerView.Adapter<patient_adapter.myView
                     holder.discount_cb.setChecked(false);
                     holder.cancel_cb.setChecked(false);
 
-                    holder.add_amount_cb.setEnabled(true);
+                    holder.amount_txt.setEnabled(true);
                 }
             }
         });
@@ -212,32 +212,40 @@ public class patient_adapter extends RecyclerView.Adapter<patient_adapter.myView
             public void onClick(View view) {
                 int amount = 0;
                 String type = "";
+                String dtype = "";
                 int hexColor = 0;
                 if(holder.normal_cb.isChecked()){
                     amount = 200;
                     type = "normal";
+                    dtype = "normal";
                     hexColor = Integer.parseInt(String.valueOf(R.color.normal));
                 } else if(holder.emergency_cb.isChecked()){
                     amount = 400;
                     type = "emergency";
+                    dtype = "emergency";
                     hexColor = Integer.parseInt(String.valueOf(R.color.emergency));
                 } else if(holder.paper_valid_db.isChecked()){
                     type = "paper_valid";
+                    dtype = "paper_valid";
                     hexColor = Integer.parseInt(String.valueOf(R.color.paper_valid));
                 } else if(holder.paper_valid_emergency_cb.isChecked()){
                     amount = 200;
                     type = "paper_valid_emergency";
+                    dtype = "emergency_paper_valid";
                     hexColor = Integer.parseInt(String.valueOf(R.color.paper_valid_emergency));
                 } else if(holder.discount_cb.isChecked()){
                     amount = Integer.parseInt(holder.percent_txt.getText().toString()) * 2;
                     type = "discount";
+                    dtype = "discount";
                     hexColor = Integer.parseInt(String.valueOf(R.color.discount));
                 } else if(holder.cancel_cb.isChecked()){
                     type = "cancel";
+                    dtype = "cancel";
                     hexColor = Integer.parseInt(String.valueOf(R.color.cancel));
                 } else if(holder.add_amount_cb.isChecked()){
                     amount = Integer.parseInt(holder.amount_txt.getText().toString());
                     type = "add_amount";
+                    dtype = "add_amount";
                     hexColor = Integer.parseInt(String.valueOf(R.color.add_amount));
                 }
 
@@ -248,6 +256,13 @@ public class patient_adapter extends RecyclerView.Adapter<patient_adapter.myView
                         holder.name_txt.getText().toString(),
                         holder.age_txt.getText().toString(),
                         amount);
+
+                try {
+                    myDb.updateDayRecord(dtype, amount);
+                } catch (Exception ex){
+                    Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+                }
+
                 Toast.makeText(context, "Please refresh to reload the data.", Toast.LENGTH_SHORT).show();
                 {
                     holder.name_txt.setEnabled(false);

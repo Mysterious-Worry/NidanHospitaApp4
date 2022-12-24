@@ -12,6 +12,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -24,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     EditText search_person_txt;
     ImageButton search_person_btn, see_day_records, refresh_btn;
     TextView normal_count_txt, emergency_count_txt, normal_paper_valid_count_txt,
-            paper_valid_emergency_txt, discount_count_txt, cancel_txt;
+            paper_valid_emergency_txt, discount_count_txt, cancel_txt, add_amount_txt;
     TextView date_txt, patient_count_txt, total_amount_txt;
     RecyclerView recycler_view;
     MyDatabaseHelper myDB;
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             total_amount_txt = (TextView)findViewById(R.id.total_amount_txt);
             recycler_view = (RecyclerView)findViewById(R.id.recycler_view);
             refresh_btn = (ImageButton)findViewById(R.id.refresh_btn);
+            add_amount_txt = (TextView)findViewById(R.id.add_amount_txt);
         } catch (Exception ex){
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -119,5 +122,20 @@ public class MainActivity extends AppCompatActivity {
         }
         patient_adapter adapter = new patient_adapter(dataHolder, this);
         recycler_view.setAdapter(adapter);
+
+        try {
+            normal_count_txt.setText(String.valueOf(myDB.senderCell("normal")));
+            emergency_count_txt.setText(String.valueOf(myDB.senderCell("emergency")));
+            normal_paper_valid_count_txt.setText(String.valueOf(myDB.senderCell("paper_valid")));
+            paper_valid_emergency_txt.setText(String.valueOf(myDB.senderCell("emergency_paper_valid")));
+            discount_count_txt.setText(String.valueOf(myDB.senderCell("discount")));
+            cancel_txt.setText(String.valueOf(myDB.senderCell("cancel")));
+            add_amount_txt.setText(String.valueOf(myDB.senderCell("add_amount")));
+            total_amount_txt.setText(String.valueOf(myDB.senderCell("total_amount_collected")));
+            patient_count_txt.setText(String.valueOf(myDB.senderCell("total_patients")));
+            date_txt.setText(String.valueOf(myDB.getDate()));
+        } catch (Exception ex){
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

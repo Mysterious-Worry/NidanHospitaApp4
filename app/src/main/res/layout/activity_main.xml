@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="#FFF">
+            android:background="#100E0E">
 
             <ImageButton
                 android:id="@+id/refresh_btn"
@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="#FFFFFF">
+            android:background="#100E0E">
             <TextView
                 android:id="@+id/normal_count_txt"
                 android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
                 android:gravity="center"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:textColor="#D10000"/>
+                android:textColor="@color/normal_hard"/>
             <TextView
                 android:id="@+id/emergency_count_txt"
                 android:layout_width="wrap_content"
@@ -90,7 +90,7 @@
                 android:textSize="25dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:textColor="#D18400"/>
+                android:textColor="@color/emergency_hard"/>
             <TextView
                 android:id="@+id/normal_paper_valid_count_txt"
                 android:layout_width="wrap_content"
@@ -101,7 +101,7 @@
                 android:textSize="25dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:textColor="#49D100"/>
+                android:textColor="@color/paper_valid_hard"/>
             <TextView
                 android:id="@+id/paper_valid_emergency_txt"
                 android:layout_width="wrap_content"
@@ -112,7 +112,7 @@
                 android:gravity="center"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:textColor="#00D1A7"/>
+                android:textColor="@color/paper_valid_emergency_hard"/>
             <TextView
                 android:id="@+id/discount_count_txt"
                 android:layout_width="wrap_content"
@@ -123,7 +123,7 @@
                 android:textSize="25dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:textColor="#0023D1"/>
+                android:textColor="@color/discount_hard"/>
             <TextView
                 android:id="@+id/cancel_txt"
                 android:layout_width="wrap_content"
@@ -134,7 +134,19 @@
                 android:textSize="25dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:textColor="#A400D1"/>
+                android:textColor="@color/cancel_hard"/>
+
+            <TextView
+                android:id="@+id/add_amount_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="25dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:textColor="@color/add_amount_hard"/>
 
         </LinearLayout>
 
@@ -142,7 +154,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="#FFFFFF">
+            android:background="#100E0E">
 
             <!--            <ImageButton-->
             <!--                android:id="@+id/user_setting_btn"-->
@@ -163,7 +175,7 @@
                 android:gravity="center"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:textColor="@color/black"/>
+                android:textColor="@color/white"/>
             <TextView
                 android:id="@+id/patient_count_txt"
                 android:layout_width="wrap_content"
@@ -174,7 +186,7 @@
                 android:textSize="25dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:textColor="@color/black"/>
+                android:textColor="@color/white"/>
             <TextView
                 android:id="@+id/total_amount_txt"
                 android:layout_width="wrap_content"
@@ -185,7 +197,7 @@
                 android:textSize="25dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:textColor="@color/black"/>
+                android:textColor="@color/white"/>
 
             <ImageButton
                 android:id="@+id/see_day_records"

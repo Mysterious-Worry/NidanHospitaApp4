@@ -8,6 +8,7 @@
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white2">#FFFFFF</color>
 
     <color name="normal">#C1FFB6</color>
     <color name="emergency">#FFBBBB</color>
@@ -16,4 +17,12 @@
     <color name="discount">#C9D0FF</color>
     <color name="cancel">#FFCCFD</color>
     <color name="add_amount">#FFDACB</color>
+
+    <color name="normal_hard">#26FF00</color>
+    <color name="emergency_hard">#FF0000</color>
+    <color name="paper_valid_hard">#FFC800</color>
+    <color name="paper_valid_emergency_hard">#00FFAE</color>
+    <color name="discount_hard">#0021FF</color>
+    <color name="cancel_hard">#FF00F5</color>
+    <color name="add_amount_hard">#FF4A00</color>
 </resources>
