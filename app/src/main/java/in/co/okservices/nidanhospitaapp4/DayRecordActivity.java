@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.DatePickerDialog;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -23,7 +24,7 @@ import in.co.okservices.nidanhospitaapp4.data_models.day_record_madel;
 public class DayRecordActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    ImageButton select_btn, search_btn, search_by_month_btn;
+    ImageButton select_btn, search_btn, search_by_month_btn, refresh_btn;
     EditText selected_date_txt;
     private int mYear, mMonth, mDay;
     Cursor cursor;
@@ -63,7 +64,7 @@ public class DayRecordActivity extends AppCompatActivity {
                                         sDayOfMonth = "0" + dayOfMonth;
                                     }
 
-                                    String date = year + "-" + (sMonthOfYear) + "-" + sDayOfMonth;
+                                    String date = sDayOfMonth + "-" + (sMonthOfYear) + "-" + year;
                                     selected_date_txt.setText(date);
                                 } catch(Exception ex){
                                     Toast.makeText(DayRecordActivity.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
@@ -77,8 +78,30 @@ public class DayRecordActivity extends AppCompatActivity {
         search_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                cursor = new MyDatabaseHelper(DayRecordActivity.this).fetchOneDayData(selected_date_txt.getText().toString());
+                loadData(cursor);
             }
+        });
+
+        search_by_month_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    String month = selected_date_txt.getText().toString().trim();
+                    StringBuilder rmv = new StringBuilder(month);
+                    rmv = rmv.delete(7, 10);
+                    selected_date_txt.setText(rmv.toString());
+                    Cursor cursor = new MyDatabaseHelper(DayRecordActivity.this).fetchMonthDayData(rmv.toString());
+                    loadData(cursor);
+                } catch (Exception ex){
+                    Toast.makeText(DayRecordActivity.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        refresh_btn.setOnClickListener(view -> {
+            cursor = new MyDatabaseHelper(DayRecordActivity.this).fetchDayData();
+            loadData(cursor);
         });
     }
 
@@ -86,6 +109,7 @@ public class DayRecordActivity extends AppCompatActivity {
         select_btn = (ImageButton)findViewById(R.id.select_btn);
         search_btn = (ImageButton)findViewById(R.id.search_btn);
         search_by_month_btn = (ImageButton)findViewById(R.id.search_by_month_btn);
+        refresh_btn = (ImageButton)findViewById(R.id.refresh_btn);
         selected_date_txt = (EditText)findViewById(R.id.selected_date_txt);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     }

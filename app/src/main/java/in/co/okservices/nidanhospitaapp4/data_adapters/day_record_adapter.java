@@ -38,15 +38,15 @@ public class day_record_adapter extends RecyclerView.Adapter<day_record_adapter.
     @Override
     public void onBindViewHolder(@NonNull myViewHolder holder, int position) {
         holder.date_txt.setText(dataHolder.get(position).getDate());
-        holder.total_patients_txt.setText(dataHolder.get(position).getTotal_patients());
-        holder.total_amount_collected_txt.setText(dataHolder.get(position).getTotal_amount_collected());
-        holder.normal_txt.setText(dataHolder.get(position).getNormal());
-        holder.emergency_txt.setText(dataHolder.get(position).getEmergency());
-        holder.paper_valid_txt.setText(dataHolder.get(position).getPaper_valid());
-        holder.emergency_paper_valid_txt.setText(dataHolder.get(position).getEmergency_paper_valid());
-        holder.discount_txt.setText(dataHolder.get(position).getDiscount());
-        holder.cancel_txt.setText(dataHolder.get(position).getCancel());
-        holder.add_amount_txt.setText(dataHolder.get(position).getAdd_amount());
+        holder.total_patients_txt.setText("TPC : " + dataHolder.get(position).getTotal_patients());
+        holder.total_amount_collected_txt.setText("AC : " + dataHolder.get(position).getTotal_amount_collected());
+        holder.normal_txt.setText("Normal : " + dataHolder.get(position).getNormal());
+        holder.emergency_txt.setText("Emergency : " + dataHolder.get(position).getEmergency());
+        holder.paper_valid_txt.setText("Paper Valid : " + dataHolder.get(position).getPaper_valid());
+        holder.emergency_paper_valid_txt.setText("Paper Valid\nEmergency : " + dataHolder.get(position).getEmergency_paper_valid());
+        holder.discount_txt.setText("Discount : " + dataHolder.get(position).getDiscount());
+        holder.cancel_txt.setText("Cancle : " + dataHolder.get(position).getCancel());
+        holder.add_amount_txt.setText("Added Amount : " + dataHolder.get(position).getAdd_amount());
     }
 
     @Override

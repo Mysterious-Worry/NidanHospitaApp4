@@ -164,6 +164,51 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public String deletePatientRow(String id){
+        try{
+            SQLiteDatabase db=this.getWritableDatabase();
+            float res = -1;
+            ContentValues pcv=new ContentValues();
+
+            pcv.put(COLUMN_SR_NO, id);
+            pcv.put(COLUMN_CHECKED, "no");
+            pcv.put(COLUMN_TYPE, "none");
+            pcv.put(COLUMN_COLOR, Integer.parseInt(String.valueOf(R.color.white2)));
+            pcv.put(COLUMN_DATE, this.getDate());
+            pcv.put(COLUMN_TIME, "--:--:-- --");
+            pcv.put(COLUMN_AMOUNT, 0);
+            pcv.put(COLUMN_NAME, "--");
+            pcv.put(COLUMN_AGE, 0);
+            res = db.update(PATIENT_TABLE, pcv, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
+
+            if(res==-1)
+                return "Failed";
+            else
+                return  "Successfully deleted";
+        } catch (Exception ex){
+            return ex.getMessage();
+        }
+    }
+
+    public void deleteDayRecord(String type, String id){
+        try {
+            SQLiteDatabase db=this.getWritableDatabase();
+            ContentValues cv=new ContentValues();
+
+            int total_amount = senderCell(COLUMN_TOTAL_AMOUNT_COLLECTED) - senderCell(COLUMN_AMOUNT, PATIENT_TABLE, id);
+            int type_count = senderCell(type) - 1;
+            int total_patients = senderCell(COLUMN_TOTAL_PATIENTS) - 1;
+
+            cv.put(COLUMN_TOTAL_AMOUNT_COLLECTED, total_amount);
+            cv.put(type, type_count);
+            cv.put(COLUMN_TOTAL_PATIENTS, total_patients);
+
+            db.update(DAY_RECORD_TABLE, cv, COLUMN_DATE + "=?", new String[]{String.valueOf(getDate())});
+        } catch (Exception ex){
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public Cursor readPatientData(){
         SQLiteDatabase db = this.getWritableDatabase();
         String qry = "SELECT * FROM "+PATIENT_TABLE+" WHERE "+COLUMN_DATE+" = '" + getDate() + "'";
@@ -181,7 +226,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public String getDate(){
         Calendar calendar = Calendar.getInstance();
         Date currentTime = calendar.getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         return dateFormat.format(currentTime);
     }
 
@@ -237,10 +282,32 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
         return rv;
     }
+    @SuppressLint("Range")
+    public int senderCell(String column_name, String table_name, String id){
+        int rv = -1;
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("select " + column_name + " from " + table_name + " where " + COLUMN_ID + "=?", new String[]{id});
+        if(cursor.moveToNext()){
+            rv = (int) cursor.getLong(cursor.getColumnIndex(column_name));
+        }
+        return rv;
+    }
 
     public Cursor fetchDayData(){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + DAY_RECORD_TABLE;
+        return db.rawQuery(query, null);
+    }
+
+    public Cursor fetchOneDayData(String date){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + DAY_RECORD_TABLE + " WHERE " + COLUMN_DATE + "='" + date + "';";
+        return db.rawQuery(query, null);
+    }
+
+    public Cursor fetchMonthDayData(String date){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + DAY_RECORD_TABLE + " WHERE " + COLUMN_DATE + " LIKE'%" + date + "%';";
         return db.rawQuery(query, null);
     }
 }

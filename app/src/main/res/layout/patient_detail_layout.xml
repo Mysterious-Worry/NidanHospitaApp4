@@ -111,6 +111,16 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/type_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="--"
+                        android:textColor="@color/black"
+                        android:textSize="25dp"/>
+
                     <CheckBox
                         android:id="@+id/normal_cb"
                         android:layout_width="match_parent"
@@ -163,7 +173,7 @@
                             android:layout_weight="1"/>
 
                         <EditText
-                            android:id="@+id/amount_txt"
+                            android:id="@+id/amount_edt_txt"
                             android:layout_width="wrap_content"
                             android:layout_height="46dp"
                             android:layout_gravity="center"
@@ -183,6 +193,16 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/amount_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="--"
+                        android:textColor="@color/black"
+                        android:textSize="25dp"/>
+
                     <CheckBox
                         android:id="@+id/emergency_cb"
                         android:layout_width="match_parent"
@@ -200,13 +220,29 @@
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:text="Cancel" />
-                    <ImageButton
-                        android:id="@+id/check_btn"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/btn_bg"
-                        android:layout_marginHorizontal="10dp"
-                        app:srcCompat="@drawable/ic_baseline_check_24" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/check_btn"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/btn_bg"
+                            android:layout_marginHorizontal="10dp"
+                            app:srcCompat="@drawable/ic_baseline_check_24" />
+
+                        <ImageButton
+                            android:id="@+id/delete_btn"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/btn_bg"
+                            android:layout_marginHorizontal="10dp"
+                            app:srcCompat="@drawable/ic_baseline_delete_forever_24" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
