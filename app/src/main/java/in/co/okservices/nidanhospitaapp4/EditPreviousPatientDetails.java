@@ -13,19 +13,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Objects;
 
 import in.co.okservices.nidanhospitaapp4.custom_packages.MyDatabaseHelper;
-import in.co.okservices.nidanhospitaapp4.data_models.*;
 import in.co.okservices.nidanhospitaapp4.data_adapters.*;
+import in.co.okservices.nidanhospitaapp4.data_models.patient_model;
 
-public class MainActivity extends AppCompatActivity {
+public class EditPreviousPatientDetails extends AppCompatActivity {
 
+    public String date;
     EditText search_person_txt;
-    ImageButton search_person_btn, see_day_records, refresh_btn;
+    ImageButton search_person_btn, go_back_btn, refresh_btn;
     TextView normal_count_txt, emergency_count_txt, normal_paper_valid_count_txt,
             paper_valid_emergency_txt, discount_count_txt, cancel_txt, add_amount_txt;
     TextView date_txt, patient_count_txt, total_amount_txt;
@@ -37,21 +35,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        myDB = new MyDatabaseHelper(MainActivity.this);
+        setContentView(R.layout.activity_edit_previous_patient_details);
         initViews();
-        insertDayData();
+
+        date = getIntent().getStringExtra("date");
 
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
-        cursor = new MyDatabaseHelper(this).readPatientData();
+        cursor = new MyDatabaseHelper(this).readPatientData(date);
         dataHolder = new ArrayList<>();
         loadDataInDataHolder();
 
         refresh_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recycler_view.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-                cursor = new MyDatabaseHelper(MainActivity.this).readPatientData();
+                recycler_view.setLayoutManager(new LinearLayoutManager(EditPreviousPatientDetails.this));
+                cursor = new MyDatabaseHelper(EditPreviousPatientDetails.this).readPatientData(date);
                 dataHolder = new ArrayList<>();
                 loadDataInDataHolder();
             }
@@ -60,17 +58,17 @@ public class MainActivity extends AppCompatActivity {
         search_person_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cursor = new MyDatabaseHelper(MainActivity.this).readOnePatientData(search_person_txt.getText().toString());
+                cursor = new MyDatabaseHelper(EditPreviousPatientDetails.this).readOnePatientData(search_person_txt.getText().toString(), date);
                 dataHolder = new ArrayList<>();
                 loadDataInDataHolder();
             }
         });
 
-        see_day_records.setOnClickListener(new View.OnClickListener() {
+        go_back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, DayRecordActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(EditPreviousPatientDetails.this, DayRecordActivity.class);
+//                startActivity(intent);
             }
         });
     }
@@ -79,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             search_person_txt = (EditText)findViewById(R.id.search_person_txt);
             search_person_btn = (ImageButton)findViewById(R.id.search_person_btn);
-            see_day_records = (ImageButton)findViewById(R.id.see_day_records);
+            go_back_btn = (ImageButton)findViewById(R.id.go_back_btn);
             normal_count_txt = (TextView)findViewById(R.id.normal_count_txt);
             emergency_count_txt = (TextView)findViewById(R.id.emergency_count_txt);
             normal_paper_valid_count_txt = (TextView)findViewById(R.id.normal_paper_valid_count_txt);
@@ -97,24 +95,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void insertDayData(){
-        boolean ifRecordExists = myDB.checkIfRecordExist(myDB.getDate());
-        if(!ifRecordExists){
-            String dataAdded = myDB.addRawData();
-            if(Objects.equals(dataAdded, "Failed")){
-                Toast.makeText(this, "Failed, adding patient data.", Toast.LENGTH_SHORT).show();
-            } else if(Objects.equals(dataAdded, "Successfully inserted")){
-                Toast.makeText(this, "Data added successfully.", Toast.LENGTH_SHORT).show();
-            }
-
-            String dayDataAdded = myDB.addDayData();
-            if(Objects.equals(dayDataAdded, "Failed")){
-                Toast.makeText(this, "Failed, adding patient data.", Toast.LENGTH_SHORT).show();
-            } else if(Objects.equals(dayDataAdded, "Successfully inserted")){
-                Toast.makeText(this, "Data added successfully.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
     private void loadDataInDataHolder() {
         try {
@@ -136,22 +116,23 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage().trim(), Toast.LENGTH_SHORT).show();
         }
-        patient_adapter adapter = new patient_adapter(dataHolder, this);
+        previous_patient_adapter adapter = new previous_patient_adapter(dataHolder, this, date);
         recycler_view.setAdapter(adapter);
 
         try {
-            normal_count_txt.setText("N: " + String.valueOf(myDB.senderCell("normal")));
-            emergency_count_txt.setText("E: " + String.valueOf(myDB.senderCell("emergency")));
-            normal_paper_valid_count_txt.setText("PV: " + String.valueOf(myDB.senderCell("paper_valid")));
-            paper_valid_emergency_txt.setText("EPV: " + String.valueOf(myDB.senderCell("emergency_paper_valid")));
-            discount_count_txt.setText("D: " + String.valueOf(myDB.senderCell("discount")));
-            cancel_txt.setText("C: " + String.valueOf(myDB.senderCell("cancel")));
-            add_amount_txt.setText("AA: " + String.valueOf(myDB.senderCell("add_amount")));
-            total_amount_txt.setText("Rs: " + String.valueOf(myDB.senderCell("total_amount_collected")));
-            patient_count_txt.setText("TPV: " + String.valueOf(myDB.senderCell("total_patients")));
+            myDB = new MyDatabaseHelper(getApplicationContext());
+            normal_count_txt.setText("N: " + String.valueOf(myDB.senderCell("normal", date)));
+            emergency_count_txt.setText("E: " + String.valueOf(myDB.senderCell("emergency", date)));
+            normal_paper_valid_count_txt.setText("PV: " + String.valueOf(myDB.senderCell("paper_valid", date)));
+            paper_valid_emergency_txt.setText("EPV: " + String.valueOf(myDB.senderCell("emergency_paper_valid", date)));
+            discount_count_txt.setText("D: " + String.valueOf(myDB.senderCell("discount", date)));
+            cancel_txt.setText("C: " + String.valueOf(myDB.senderCell("cancel", date)));
+            add_amount_txt.setText("AA: " + String.valueOf(myDB.senderCell("add_amount", date)));
+            total_amount_txt.setText("Rs: " + String.valueOf(myDB.senderCell("total_amount_collected", date)));
+            patient_count_txt.setText("TPV: " + String.valueOf(myDB.senderCell("total_patients", date)));
             date_txt.setText(String.valueOf(myDB.getDate()));
         } catch (Exception ex){
-            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

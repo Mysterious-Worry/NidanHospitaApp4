@@ -1,6 +1,7 @@
 package in.co.okservices.nidanhospitaapp4.data_adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 
+import in.co.okservices.nidanhospitaapp4.EditPreviousPatientDetails;
 import in.co.okservices.nidanhospitaapp4.R;
 import in.co.okservices.nidanhospitaapp4.data_models.day_record_madel;
 
@@ -47,6 +49,15 @@ public class day_record_adapter extends RecyclerView.Adapter<day_record_adapter.
         holder.discount_txt.setText("Discount : " + dataHolder.get(position).getDiscount());
         holder.cancel_txt.setText("Cancle : " + dataHolder.get(position).getCancel());
         holder.add_amount_txt.setText("Added Amount : " + dataHolder.get(position).getAdd_amount());
+
+        holder.see_details_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, EditPreviousPatientDetails.class);
+                intent.putExtra("date", holder.date_txt.getText().toString());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

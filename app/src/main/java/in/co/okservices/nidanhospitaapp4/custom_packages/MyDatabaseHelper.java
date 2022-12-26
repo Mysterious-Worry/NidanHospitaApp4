@@ -277,7 +277,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.update(DAY_RECORD_TABLE, cv, COLUMN_DATE + "=?", new String[]{String.valueOf(getDate())});
     }
 
-
     @SuppressLint("Range")
     public int senderCell(String column_name){
         int rv = -1;
@@ -285,18 +284,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery("select " + column_name + " from " + DAY_RECORD_TABLE + " where " + COLUMN_DATE + "=?", new String[]{getDate()});
         if(cursor.moveToNext()){
             rv = (int) cursor.getLong(cursor.getColumnIndex(column_name));
-        }
-        return rv;
-    }
-
-    @SuppressLint("Range")
-    public int senderCellReturnAmount(String id){
-        Toast.makeText(context, id, Toast.LENGTH_SHORT).show();
-        int rv = -1;
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery("select amount from patients where " + COLUMN_ID + "=?", new String[]{id});
-        if(cursor.moveToNext()){
-            rv = (int) cursor.getLong(cursor.getColumnIndex("amount"));
         }
         return rv;
     }
@@ -317,5 +304,116 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + DAY_RECORD_TABLE + " WHERE " + COLUMN_DATE + " LIKE'%" + date + "%';";
         return db.rawQuery(query, null);
+    }
+
+    // with manual date feed
+
+    public String deletePatientRow(String id, String date){
+        try{
+            SQLiteDatabase db=this.getWritableDatabase();
+            float res = -1;
+            ContentValues pcv=new ContentValues();
+
+            pcv.put(COLUMN_SR_NO, id);
+            pcv.put(COLUMN_CHECKED, "no");
+            pcv.put(COLUMN_TYPE, "none");
+            pcv.put(COLUMN_COLOR, Integer.parseInt(String.valueOf(R.color.white2)));
+            pcv.put(COLUMN_DATE, date);
+            pcv.put(COLUMN_TIME, "--:--:-- --");
+            pcv.put(COLUMN_AMOUNT, 0);
+            pcv.put(COLUMN_NAME, "--");
+            pcv.put(COLUMN_AGE, 0);
+            res = db.update(PATIENT_TABLE, pcv, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
+
+            if(res==-1)
+                return "Failed";
+            else
+                return  "Successfully deleted";
+        } catch (Exception ex){
+            return ex.getMessage();
+        }
+    }
+
+    public void deleteDayRecord(String type, String amount, String date){
+
+        if(type == "paper_valid_emergency"){
+            type = "emergency_paper_valid";
+        }
+
+        try {
+            SQLiteDatabase db=this.getWritableDatabase();
+            ContentValues cv=new ContentValues();
+
+            int total_amount = senderCell(COLUMN_TOTAL_AMOUNT_COLLECTED, date) - Integer.parseInt(amount);
+            int type_count = senderCell(type, date) - 1;
+            int total_patients = senderCell(COLUMN_TOTAL_PATIENTS, date) - 1;
+
+            cv.put(COLUMN_TOTAL_AMOUNT_COLLECTED, total_amount);
+            cv.put(type, type_count);
+            cv.put(COLUMN_TOTAL_PATIENTS, total_patients);
+
+            db.update(DAY_RECORD_TABLE, cv, COLUMN_DATE + "=?", new String[]{String.valueOf(date)});
+        } catch (Exception ex){
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public Cursor readPatientData(String date){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String qry = "SELECT * FROM "+PATIENT_TABLE+" WHERE "+COLUMN_DATE+" = '" + date + "'";
+        Cursor cursor = db.rawQuery(qry,null);
+        return  cursor;
+    }
+
+    public Cursor readOnePatientData(String srno, String date){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String qry = "SELECT * FROM "+PATIENT_TABLE+" WHERE "+COLUMN_DATE+" = '" + date + "' AND " + COLUMN_SR_NO + " ='" + srno+"'";
+        Cursor cursor = db.rawQuery(qry,null);
+        return  cursor;
+    }
+
+    public void updatePatientDetail(int _id, int sr_no, String type, int color, String name, String age, int amount, String date){
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues cv=new ContentValues();
+        try{
+            cv.put(COLUMN_SR_NO,sr_no);
+            cv.put(COLUMN_CHECKED,"yes");
+            cv.put(COLUMN_TYPE, type);
+            cv.put(COLUMN_COLOR, color);
+            cv.put(COLUMN_DATE, date);
+            cv.put(COLUMN_TIME, this.getTime());
+            cv.put(COLUMN_AMOUNT, amount);
+            cv.put(COLUMN_NAME, name);
+            cv.put(COLUMN_AGE, age);
+            db.update(PATIENT_TABLE, cv, COLUMN_ID + "=?", new String[]{String.valueOf(_id)});
+        } catch (Exception ex){
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void updateDayRecord(String type, int amount, String date){
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues cv=new ContentValues();
+
+        int total_amount = senderCell(COLUMN_TOTAL_AMOUNT_COLLECTED, date) + amount;
+        int type_count = senderCell(type, date) + 1;
+        int total_patients = senderCell(COLUMN_TOTAL_PATIENTS, date) + 1;
+
+        cv.put(COLUMN_TOTAL_AMOUNT_COLLECTED, total_amount);
+        cv.put(type, type_count);
+        cv.put(COLUMN_TOTAL_PATIENTS, total_patients);
+
+        db.update(DAY_RECORD_TABLE, cv, COLUMN_DATE + "=?", new String[]{String.valueOf(date)});
+    }
+
+    @SuppressLint("Range")
+    public int senderCell(String column_name, String date){
+        int rv = -1;
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("select " + column_name + " from " + DAY_RECORD_TABLE + " where " + COLUMN_DATE + "=?", new String[]{date});
+        if(cursor.moveToNext()){
+            rv = (int) cursor.getLong(cursor.getColumnIndex(column_name));
+        }
+        return rv;
     }
 }
