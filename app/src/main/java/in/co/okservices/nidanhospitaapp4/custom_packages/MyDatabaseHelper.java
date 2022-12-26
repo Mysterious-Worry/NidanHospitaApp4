@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.nio.file.AccessMode;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -190,12 +191,17 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteDayRecord(String type, String id){
+    public void deleteDayRecord(String type, String amount){
+
+        if(type == "paper_valid_emergency"){
+            type = "emergency_paper_valid";
+        }
+
         try {
             SQLiteDatabase db=this.getWritableDatabase();
             ContentValues cv=new ContentValues();
-
-            int total_amount = senderCell(COLUMN_TOTAL_AMOUNT_COLLECTED) - senderCell(COLUMN_AMOUNT, PATIENT_TABLE, id);
+            
+            int total_amount = senderCell(COLUMN_TOTAL_AMOUNT_COLLECTED) - Integer.parseInt(amount);
             int type_count = senderCell(type) - 1;
             int total_patients = senderCell(COLUMN_TOTAL_PATIENTS) - 1;
 
@@ -282,13 +288,15 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
         return rv;
     }
+
     @SuppressLint("Range")
-    public int senderCell(String column_name, String table_name, String id){
+    public int senderCellReturnAmount(String id){
+        Toast.makeText(context, id, Toast.LENGTH_SHORT).show();
         int rv = -1;
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery("select " + column_name + " from " + table_name + " where " + COLUMN_ID + "=?", new String[]{id});
+        Cursor cursor = sqLiteDatabase.rawQuery("select amount from patients where " + COLUMN_ID + "=?", new String[]{id});
         if(cursor.moveToNext()){
-            rv = (int) cursor.getLong(cursor.getColumnIndex(column_name));
+            rv = (int) cursor.getLong(cursor.getColumnIndex("amount"));
         }
         return rv;
     }

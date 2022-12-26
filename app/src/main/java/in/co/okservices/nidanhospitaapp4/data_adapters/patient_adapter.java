@@ -299,7 +299,7 @@ public class patient_adapter extends RecyclerView.Adapter<patient_adapter.myView
             public void onClick(View view) {
                 String deleteMethod = myDb.deletePatientRow(holder.id_txt.getText().toString());
                 Toast.makeText(context, deleteMethod, Toast.LENGTH_SHORT).show();
-                myDb.deleteDayRecord(holder.type_txt.getText().toString(), holder.id_txt.getText().toString());
+                myDb.deleteDayRecord(holder.type_txt.getText().toString(), holder.amount_txt.getText().toString());
             }
         });
     }

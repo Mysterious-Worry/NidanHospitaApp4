@@ -1,7 +1,7 @@
 package in.co.okservices.nidanhospitaapp4.data_models;
 
 public class patient_model {
-    String _id, sr_no, checked, type, color, date, time, amount, name, age;
+    public String _id, sr_no, checked, type, color, date, time, amount, name, age;
 
     public patient_model(String _id, String sr_no, String checked, String type, String color, String date, String time, String amount,String name, String age) {
         this._id = _id;
@@ -11,6 +11,7 @@ public class patient_model {
         this.color = color;
         this.date = date;
         this.time = time;
+        this.amount = amount;
         this.name = name;
         this.age = age;
     }
