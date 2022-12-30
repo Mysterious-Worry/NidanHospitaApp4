@@ -250,9 +250,17 @@ public class patient_adapter extends RecyclerView.Adapter<patient_adapter.myView
                     dtype = "emergency_paper_valid";
                     hexColor = Integer.parseInt(String.valueOf(R.color.paper_valid_emergency));
                 } else if(holder.discount_cb.isChecked()){
-                    amount = Integer.parseInt(holder.percent_txt.getText().toString()) * 2;
-                    dtype = type = "discount";
-                    hexColor = Integer.parseInt(String.valueOf(R.color.discount));
+                    try{
+                        if(Integer.parseInt(holder.percent_txt.getText().toString()) > 100){
+                            Toast.makeText(context, "The discounted amount should not be more than 100%.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            amount = 200-Integer.parseInt(holder.percent_txt.getText().toString()) * 2;
+                            dtype = type = "discount";
+                            hexColor = Integer.parseInt(String.valueOf(R.color.discount));
+                        }
+                    } catch (Exception ex) {
+                        Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 } else if(holder.cancel_cb.isChecked()){
                     dtype = type = "cancel";
                     hexColor = Integer.parseInt(String.valueOf(R.color.cancel));
