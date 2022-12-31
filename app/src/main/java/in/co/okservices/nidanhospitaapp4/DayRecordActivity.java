@@ -24,7 +24,7 @@ import in.co.okservices.nidanhospitaapp4.data_models.day_record_madel;
 public class DayRecordActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    ImageButton select_btn, search_btn, search_by_month_btn, refresh_btn;
+    ImageButton select_btn, search_btn, search_by_month_btn, refresh_btn, get_pdf_btn;
     EditText selected_date_txt;
     private int mYear, mMonth, mDay;
     Cursor cursor;
@@ -103,6 +103,18 @@ public class DayRecordActivity extends AppCompatActivity {
             cursor = new MyDatabaseHelper(DayRecordActivity.this).fetchDayData();
             loadData(cursor);
         });
+
+        get_pdf_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{
+                    String path = new MyDatabaseHelper(DayRecordActivity.this).makePDF(cursor);
+                    Toast.makeText(DayRecordActivity.this, path, Toast.LENGTH_SHORT).show();
+                }catch(Exception ex){
+                    Toast.makeText(DayRecordActivity.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void initViews(){
@@ -110,6 +122,7 @@ public class DayRecordActivity extends AppCompatActivity {
         search_btn = (ImageButton)findViewById(R.id.search_btn);
         search_by_month_btn = (ImageButton)findViewById(R.id.search_by_month_btn);
         refresh_btn = (ImageButton)findViewById(R.id.refresh_btn);
+        get_pdf_btn = (ImageButton)findViewById(R.id.get_pdf_btn);
         selected_date_txt = (EditText)findViewById(R.id.selected_date_txt);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     }

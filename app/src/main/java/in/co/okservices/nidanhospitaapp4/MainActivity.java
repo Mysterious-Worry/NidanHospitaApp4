@@ -1,6 +1,7 @@
 package in.co.okservices.nidanhospitaapp4;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -138,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         }
         patient_adapter adapter = new patient_adapter(dataHolder, this);
         recycler_view.setAdapter(adapter);
+        recycler_view.setItemAnimator(new DefaultItemAnimator());
 
         try {
             normal_count_txt.setText("N: " + String.valueOf(myDB.senderCell("normal")));

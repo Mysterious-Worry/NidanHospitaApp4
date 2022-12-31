@@ -6,16 +6,27 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import java.nio.file.AccessMode;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import in.co.okservices.nidanhospitaapp4.R;
+import in.co.okservices.nidanhospitaapp4.data_models.*;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
 
@@ -415,5 +426,50 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             rv = (int) cursor.getLong(cursor.getColumnIndex(column_name));
         }
         return rv;
+    }
+
+    public String makePDF(Cursor cursor){
+        Document document = new Document();
+
+        String fileName = "MyPDF2.pdf";
+        String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + fileName;
+
+        try {
+            PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(filePath));
+        } catch (DocumentException | FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        document.open();
+
+        try {
+            document.add(new Paragraph("My PDF"));
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+
+        if (cursor != null && cursor.moveToFirst()) {
+            PdfPTable table = new PdfPTable(cursor.getColumnCount());
+
+            for (int i = 0; i < cursor.getColumnCount(); i++) {
+                table.addCell(cursor.getColumnName(i));
+            }
+
+            do {
+                for (int i = 0; i < cursor.getColumnCount(); i++) {
+                    table.addCell(cursor.getString(i));
+                }
+            } while (cursor.moveToNext());
+
+            try {
+                document.add(table);
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+        }
+        cursor.close();
+        document.close();
+
+        return filePath;
     }
 }

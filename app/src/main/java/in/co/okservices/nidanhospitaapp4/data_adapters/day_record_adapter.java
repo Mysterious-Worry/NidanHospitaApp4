@@ -1,5 +1,6 @@
 package in.co.okservices.nidanhospitaapp4.data_adapters;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,6 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.w3c.dom.Document;
+
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 
@@ -87,4 +91,5 @@ public class day_record_adapter extends RecyclerView.Adapter<day_record_adapter.
             see_details_btn = (ImageButton)itemView.findViewById(R.id.see_details_btn);
         }
     }
+
 }
