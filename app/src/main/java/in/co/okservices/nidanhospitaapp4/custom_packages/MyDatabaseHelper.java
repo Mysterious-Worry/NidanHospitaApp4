@@ -1,8 +1,10 @@
 package in.co.okservices.nidanhospitaapp4.custom_packages;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -10,7 +12,10 @@ import android.os.Environment;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
@@ -25,6 +30,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import in.co.okservices.nidanhospitaapp4.DayRecordActivity;
 import in.co.okservices.nidanhospitaapp4.R;
 import in.co.okservices.nidanhospitaapp4.data_models.*;
 
@@ -75,7 +81,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_TIME + " TEXT, " +
                 COLUMN_AMOUNT + " INT, " +
                 COLUMN_NAME + " TEXT, " +
-                COLUMN_AGE + " INTEGER);";
+                COLUMN_AGE + " TEXT);";
 
         String dayRecordTableQuery = "CREATE TABLE " + DAY_RECORD_TABLE +
                 " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -428,48 +434,45 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return rv;
     }
 
-    public String makePDF(Cursor cursor){
+    public String makePDF(Cursor cursor) throws DocumentException, FileNotFoundException {
+        // Create a new document
         Document document = new Document();
+        // Create a new file in the "Documents" directory with a unique name
+        File pdfFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "MyPDF_" + System.currentTimeMillis() + ".pdf");
 
-        String fileName = "MyPDF2.pdf";
-        String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + fileName;
+        PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(pdfFile));
 
-        try {
-            PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(filePath));
-        } catch (DocumentException | FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
+// Open the document for writing
         document.open();
 
-        try {
-            document.add(new Paragraph("My PDF"));
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
+// Add a title to the document
+        document.add(new Paragraph("My PDF"));
 
+
+// Iterate through the cursor and add each row to the PDF as a table
         if (cursor != null && cursor.moveToFirst()) {
+            // Create a new table with the number of columns in the cursor
             PdfPTable table = new PdfPTable(cursor.getColumnCount());
 
+            // Add the table headers
             for (int i = 0; i < cursor.getColumnCount(); i++) {
                 table.addCell(cursor.getColumnName(i));
             }
 
+            // Add the table rows
             do {
                 for (int i = 0; i < cursor.getColumnCount(); i++) {
                     table.addCell(cursor.getString(i));
                 }
             } while (cursor.moveToNext());
 
-            try {
-                document.add(table);
-            } catch (DocumentException e) {
-                e.printStackTrace();
-            }
+            // Add the table to the document
+            document.add(table);
         }
+
         cursor.close();
         document.close();
 
-        return filePath;
+        return pdfFile.toString();
     }
 }

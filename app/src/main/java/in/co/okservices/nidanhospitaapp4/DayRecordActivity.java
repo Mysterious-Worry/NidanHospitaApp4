@@ -1,10 +1,14 @@
 package in.co.okservices.nidanhospitaapp4;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -28,6 +32,7 @@ public class DayRecordActivity extends AppCompatActivity {
     EditText selected_date_txt;
     private int mYear, mMonth, mDay;
     Cursor cursor;
+    private static final int REQUEST_WRITE_STORAGE = 112;
     ArrayList<day_record_madel> dataHolder;
 
     @Override
@@ -107,9 +112,14 @@ public class DayRecordActivity extends AppCompatActivity {
         get_pdf_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission(DayRecordActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    // Request the necessary permissions
+                    ActivityCompat.requestPermissions(DayRecordActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
+
+                }
                 try{
-                    String path = new MyDatabaseHelper(DayRecordActivity.this).makePDF(cursor);
-                    Toast.makeText(DayRecordActivity.this, path, Toast.LENGTH_SHORT).show();
+                    String str = new MyDatabaseHelper(DayRecordActivity.this).makePDF(cursor);
+                    Toast.makeText(DayRecordActivity.this, str, Toast.LENGTH_SHORT).show();
                 }catch(Exception ex){
                     Toast.makeText(DayRecordActivity.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
                 }

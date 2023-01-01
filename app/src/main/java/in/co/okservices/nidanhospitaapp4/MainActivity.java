@@ -51,10 +51,18 @@ public class MainActivity extends AppCompatActivity {
         refresh_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager)recycler_view.getLayoutManager();
+                int currentPosition = linearLayoutManager.findFirstVisibleItemPosition();
+                float visibleFraction;
+
+                RecyclerView.ViewHolder viewHolder = recycler_view.findViewHolderForAdapterPosition(currentPosition);
+
                 recycler_view.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                 cursor = new MyDatabaseHelper(MainActivity.this).readPatientData();
                 dataHolder = new ArrayList<>();
                 loadDataInDataHolder();
+
+                recycler_view.getLayoutManager().scrollToPosition(currentPosition);
             }
         });
 
@@ -155,5 +163,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception ex){
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
+
     }
 }

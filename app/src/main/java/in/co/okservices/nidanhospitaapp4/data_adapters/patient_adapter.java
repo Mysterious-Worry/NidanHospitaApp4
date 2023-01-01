@@ -1,6 +1,8 @@
 package in.co.okservices.nidanhospitaapp4.data_adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,23 +67,23 @@ public class patient_adapter extends RecyclerView.Adapter<patient_adapter.myView
         holder.age_txt.setText(dataHolder.get(position).getAge());
         holder.color_txt.setText(dataHolder.get(position).getColor());
         holder.amount_txt.setText(dataHolder.get(position).getAmount());
-        holder.type_txt.setText(dataHolder.get(position).getType());
-        {
-            if(holder.type_txt.getText().toString() == "normal") {
-                holder.type_txt.setText("Normal");
-            } else if(holder.type_txt.getText().toString() == "emergency") {
-                holder.type_txt.setText("Emergency");
-            } else if(holder.type_txt.getText().toString() == "paper_valid") {
-                holder.type_txt.setText("Paper Valid");
-            } else if(holder.type_txt.getText().toString() == "paper_valid_emergency") {
-                holder.type_txt.setText("Paper Valid\nEmergency");
-            } else if(holder.type_txt.getText().toString() == "discount") {
-                holder.type_txt.setText("Discount");
-            } else if(holder.type_txt.getText().toString() == "cancel") {
-                holder.type_txt.setText("Cancel");
-            } else if(holder.type_txt.getText().toString() == "add_amount") {
-                holder.type_txt.setText("Amount");
-            }
+//        holder.type_txt.setText(dataHolder.get(position).getType());
+        if(dataHolder.get(position).getColor().equals("2131100236")) {
+            holder.type_txt.setText("Normal");
+        } else if(dataHolder.get(position).getColor().equals("2131099742")) {
+            holder.type_txt.setText("Emergency");
+        } else if(dataHolder.get(position).getColor().equals("2131100240")) {
+            holder.type_txt.setText("Paper Valid");
+        } else if(dataHolder.get(position).getColor().equals("2131100241")) {
+            holder.type_txt.setText("Paper Valid\nEmergency");
+        } else if(dataHolder.get(position).getColor().equals("2131099740")) {
+            holder.type_txt.setText("Discount");
+        } else if(dataHolder.get(position).getColor().equals("2131099692")) {
+            holder.type_txt.setText("Cancel");
+        } else if(dataHolder.get(position).getColor().equals("2131099675")) {
+            holder.type_txt.setText("Amount");
+        } else {
+            holder.type_txt.setText("Not\nDefined");
         }
 
         try{
@@ -305,9 +307,22 @@ public class patient_adapter extends RecyclerView.Adapter<patient_adapter.myView
         holder.delete_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String deleteMethod = myDb.deletePatientRow(holder.id_txt.getText().toString());
-                Toast.makeText(context, deleteMethod, Toast.LENGTH_SHORT).show();
-                myDb.deleteDayRecord(holder.type_txt.getText().toString(), holder.amount_txt.getText().toString());
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Do you want to clean this record?");
+                builder.setCancelable(false);
+
+                builder.setPositiveButton("Yes", (DialogInterface.OnClickListener) (dialog, which) -> {
+                    String deleteMethod = myDb.deletePatientRow(holder.id_txt.getText().toString());
+                    Toast.makeText(context, deleteMethod, Toast.LENGTH_SHORT).show();
+                    myDb.deleteDayRecord(holder.type_txt.getText().toString(), holder.amount_txt.getText().toString());
+                });
+
+                builder.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog, which) -> {
+                    dialog.cancel();
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
         });
     }
