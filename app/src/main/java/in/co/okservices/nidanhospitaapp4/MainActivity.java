@@ -14,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recycler_view;
     MyDatabaseHelper myDB;
     ArrayList<patient_model> dataHolder;
+    FloatingActionButton go_to_top_btn;
     Cursor cursor;
 
     @Override
@@ -82,6 +85,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        go_to_top_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recycler_view.smoothScrollToPosition(0);
+            }
+        });
     }
 
     private void initViews(){
@@ -101,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
             recycler_view = (RecyclerView)findViewById(R.id.recycler_view);
             refresh_btn = (ImageButton)findViewById(R.id.refresh_btn);
             add_amount_txt = (TextView)findViewById(R.id.add_amount_txt);
+            go_to_top_btn = (FloatingActionButton)findViewById(R.id.go_to_top_btn);
+            go_to_top_btn = (FloatingActionButton)findViewById(R.id.go_to_top_btn);
         } catch (Exception ex){
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }

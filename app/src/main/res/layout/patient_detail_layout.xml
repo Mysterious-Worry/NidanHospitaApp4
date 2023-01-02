@@ -58,7 +58,8 @@
                 <EditText
                     android:id="@+id/name_txt"
                     android:layout_width="200dp"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:background="@color/white"
@@ -72,7 +73,8 @@
                 <EditText
                     android:id="@+id/age_txt"
                     android:layout_width="100dp"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:background="@color/white"
@@ -124,14 +126,16 @@
                     <CheckBox
                         android:id="@+id/normal_cb"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
                         android:text="Normal"
                         android:textSize="18dp"/>
 
                     <CheckBox
                         android:id="@+id/paper_valid_db"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
                         android:text="Paper Valid"
                         android:textSize="18dp"/>
 
@@ -144,7 +148,8 @@
                         <CheckBox
                             android:id="@+id/discount_cb"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
                             android:text="Discount"
                             android:layout_weight="1"
                             android:textSize="18dp"/>
@@ -171,7 +176,8 @@
                         <CheckBox
                             android:id="@+id/add_amount_cb"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
                             android:text="Add Amount"
                             android:layout_weight="1"
                             android:textSize="18dp"/>
@@ -210,21 +216,24 @@
                     <CheckBox
                         android:id="@+id/emergency_cb"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
                         android:text="Emergency"
                         android:textSize="18dp"/>
 
                     <CheckBox
                         android:id="@+id/paper_valid_emergency_cb"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
                         android:text="Paper Valid Emergency"
                         android:textSize="18dp"/>
 
                     <CheckBox
                         android:id="@+id/cancel_cb"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
                         android:text="Cancel"
                         android:textSize="18dp"/>
 

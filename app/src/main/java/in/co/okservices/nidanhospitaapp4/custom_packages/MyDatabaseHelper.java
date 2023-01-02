@@ -210,7 +210,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     public void deleteDayRecord(String type, String amount){
 
-        if(type == "paper_valid_emergency"){
+        if(type.equals("paper_valid_emergency")){
             type = "emergency_paper_valid";
         }
 
