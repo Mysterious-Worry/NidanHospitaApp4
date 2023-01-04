@@ -182,17 +182,17 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public String deletePatientRow(String id){
+    public String deletePatientRow(String id, String date, String sr_no){
         try{
             SQLiteDatabase db=this.getWritableDatabase();
             float res = -1;
             ContentValues pcv=new ContentValues();
 
-            pcv.put(COLUMN_SR_NO, id);
+            pcv.put(COLUMN_SR_NO, sr_no);
             pcv.put(COLUMN_CHECKED, "no");
             pcv.put(COLUMN_TYPE, "none");
             pcv.put(COLUMN_COLOR, Integer.parseInt(String.valueOf(R.color.white2)));
-            pcv.put(COLUMN_DATE, this.getDate());
+            pcv.put(COLUMN_DATE, date);
             pcv.put(COLUMN_TIME, "--:--:-- --");
             pcv.put(COLUMN_AMOUNT, 0);
             pcv.put(COLUMN_NAME, "--");
@@ -317,6 +317,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery(query, null);
     }
 
+    public Cursor fetchBetweenDayData(String id1, String id2){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + DAY_RECORD_TABLE + " WHERE " + COLUMN_ID + " BETWEEN " + id1 + " AND " + id2 + ";";
+        return db.rawQuery(query, null);
+    }
+
     public Cursor fetchMonthDayData(String date){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + DAY_RECORD_TABLE + " WHERE " + COLUMN_DATE + " LIKE'%" + date + "%';";
@@ -325,7 +331,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     // with manual date feed
 
-    public String deletePatientRow(String id, String date){
+    public String deletePatientRow(String id, String date, String srno, int t){
         try{
             SQLiteDatabase db=this.getWritableDatabase();
             float res = -1;

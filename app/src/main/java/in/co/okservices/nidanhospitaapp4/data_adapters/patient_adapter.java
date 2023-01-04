@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.w3c.dom.Text;
@@ -231,75 +232,188 @@ public class patient_adapter extends RecyclerView.Adapter<patient_adapter.myView
         holder.check_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int amount = 0;
-                String type = "";
-                String dtype = "";
-                int hexColor = 0;
-                if(holder.normal_cb.isChecked()){
-                    amount = 200;
-                    dtype = type = "normal";
-                    hexColor = Integer.parseInt(String.valueOf(R.color.normal));
-                } else if(holder.emergency_cb.isChecked()){
-                    amount = 400;
-                    dtype = type = "emergency";
-                    hexColor = Integer.parseInt(String.valueOf(R.color.emergency));
-                } else if(holder.paper_valid_db.isChecked()){
-                    dtype = type = "paper_valid";
-                    hexColor = Integer.parseInt(String.valueOf(R.color.paper_valid));
-                } else if(holder.paper_valid_emergency_cb.isChecked()){
-                    amount = 200;
-                    type = "paper_valid_emergency";
-                    dtype = "emergency_paper_valid";
-                    hexColor = Integer.parseInt(String.valueOf(R.color.paper_valid_emergency));
-                } else if(holder.discount_cb.isChecked()){
-                    try{
-                        if(Integer.parseInt(holder.percent_txt.getText().toString()) > 100){
-                            Toast.makeText(context, "The discounted amount should not be more than 100%.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            amount = 200-Integer.parseInt(holder.percent_txt.getText().toString()) * 2;
-                            dtype = type = "discount";
-                            hexColor = Integer.parseInt(String.valueOf(R.color.discount));
-                        }
-                    } catch (Exception ex) {
-                        Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                } else if(holder.cancel_cb.isChecked()){
-                    dtype = type = "cancel";
-                    hexColor = Integer.parseInt(String.valueOf(R.color.cancel));
-                } else if(holder.add_amount_cb.isChecked()){
-                    amount = Integer.parseInt(holder.amount_edt_txt.getText().toString());
-                    dtype = type = "add_amount";
-                    hexColor = Integer.parseInt(String.valueOf(R.color.add_amount));
-                }
 
-                myDb.updatePatientDetail(Integer.parseInt(holder.id_txt.getText().toString()),
-                        Integer.parseInt(holder.sr_no_txt.getText().toString()),
-                        type,
-                        hexColor,
-                        holder.name_txt.getText().toString(),
-                        holder.age_txt.getText().toString(),
-                        amount);
-
-                try {
-                    myDb.updateDayRecord(dtype, amount);
-                } catch (Exception ex){
-                    Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
-                }
-
-                Toast.makeText(context, "Please refresh to reload the data.", Toast.LENGTH_SHORT).show();
+                if(holder.type_txt.getText().toString().equals("Not\nDefined"))
                 {
-                    holder.name_txt.setEnabled(false);
-                    holder.age_txt.setEnabled(false);
-                    holder.percent_txt.setEnabled(false);
-                    holder.amount_edt_txt.setEnabled(false);
-                    holder.normal_cb.setEnabled(false);
-                    holder.emergency_cb.setEnabled(false);
-                    holder.paper_valid_db.setEnabled(false);
-                    holder.paper_valid_emergency_cb.setEnabled(false);
-                    holder.discount_cb.setEnabled(false);
-                    holder.cancel_cb.setEnabled(false);
-                    holder.add_amount_cb.setEnabled(false);
-                    holder.check_btn.setEnabled(false);
+                    int amount = 0;
+                    String type = "";
+                    String dtype = "";
+                    int hexColor = 0;
+                    if (holder.normal_cb.isChecked()) {
+                        amount = 200;
+                        dtype = type = "normal";
+                        hexColor = Integer.parseInt(String.valueOf(R.color.normal));
+                    } else if (holder.emergency_cb.isChecked()) {
+                        amount = 400;
+                        dtype = type = "emergency";
+                        hexColor = Integer.parseInt(String.valueOf(R.color.emergency));
+                    } else if (holder.paper_valid_db.isChecked()) {
+                        dtype = type = "paper_valid";
+                        hexColor = Integer.parseInt(String.valueOf(R.color.paper_valid));
+                    } else if (holder.paper_valid_emergency_cb.isChecked()) {
+                        amount = 200;
+                        type = "paper_valid_emergency";
+                        dtype = "emergency_paper_valid";
+                        hexColor = Integer.parseInt(String.valueOf(R.color.paper_valid_emergency));
+                    } else if (holder.discount_cb.isChecked()) {
+                        try {
+                            if (Integer.parseInt(holder.percent_txt.getText().toString()) > 100) {
+                                Toast.makeText(context, "The discounted amount should not be more than 100%.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                amount = 200 - Integer.parseInt(holder.percent_txt.getText().toString()) * 2;
+                                dtype = type = "discount";
+                                hexColor = Integer.parseInt(String.valueOf(R.color.discount));
+                            }
+                        } catch (Exception ex) {
+                            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    } else if (holder.cancel_cb.isChecked()) {
+                        dtype = type = "cancel";
+                        hexColor = Integer.parseInt(String.valueOf(R.color.cancel));
+                    } else if (holder.add_amount_cb.isChecked()) {
+                        amount = Integer.parseInt(holder.amount_edt_txt.getText().toString());
+                        dtype = type = "add_amount";
+                        hexColor = Integer.parseInt(String.valueOf(R.color.add_amount));
+                    }
+
+                    myDb.updatePatientDetail(Integer.parseInt(holder.id_txt.getText().toString()),
+                            Integer.parseInt(holder.sr_no_txt.getText().toString()),
+                            type,
+                            hexColor,
+                            holder.name_txt.getText().toString(),
+                            holder.age_txt.getText().toString(),
+                            amount);
+
+                    try {
+                        myDb.updateDayRecord(dtype, amount);
+                    } catch (Exception ex) {
+                        Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+
+                    Toast.makeText(context, "Please refresh to reload the data.", Toast.LENGTH_SHORT).show();
+                    {
+                        holder.name_txt.setEnabled(false);
+                        holder.age_txt.setEnabled(false);
+                        holder.percent_txt.setEnabled(false);
+                        holder.amount_edt_txt.setEnabled(false);
+                        holder.normal_cb.setEnabled(false);
+                        holder.emergency_cb.setEnabled(false);
+                        holder.paper_valid_db.setEnabled(false);
+                        holder.paper_valid_emergency_cb.setEnabled(false);
+                        holder.discount_cb.setEnabled(false);
+                        holder.cancel_cb.setEnabled(false);
+                        holder.add_amount_cb.setEnabled(false);
+                        holder.check_btn.setEnabled(false);
+                    }
+                }
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage("Do you want to clean this record?");
+                    builder.setCancelable(false);
+
+                    builder.setPositiveButton("Yes", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        String type = null;
+                        if(holder.type_txt.getText().toString().equals("Normal")){
+                            type = "normal";
+                        } else if(holder.type_txt.getText().toString().equals("Emergency")){
+                            type = "emergency";
+                        } else if(holder.type_txt.getText().toString().equals("Paper Valid")){
+                            type = "paper_valid";
+                        } else if(holder.type_txt.getText().toString().equals("Paper Valid\nEmergency") ||
+                                holder.type_txt.getText().toString().equals("Paper Valid Emergency")){
+                            type = "emergency_paper_valid";
+                        } else if(holder.type_txt.getText().toString().equals("Discount")){
+                            type = "discount";
+                        } else if(holder.type_txt.getText().toString().equals("Cancel")){
+                            type = "cancel";
+                        } else if(holder.type_txt.getText().toString().equals("Amount")){
+                            type = "add_amount";
+                        }
+
+                        String deleteMethod = myDb.deletePatientRow(holder.id_txt.getText().toString(), myDb.getDate(), holder.sr_no_txt.getText().toString());
+                        Toast.makeText(context, deleteMethod, Toast.LENGTH_SHORT).show();
+                        myDb.deleteDayRecord(type, holder.amount_txt.getText().toString());
+
+                        {
+                            int amount = 0;
+                            String ptype = "";
+                            String dtype = "";
+                            int hexColor = 0;
+                            if (holder.normal_cb.isChecked()) {
+                                amount = 200;
+                                dtype = ptype = "normal";
+                                hexColor = Integer.parseInt(String.valueOf(R.color.normal));
+                            } else if (holder.emergency_cb.isChecked()) {
+                                amount = 400;
+                                dtype = ptype = "emergency";
+                                hexColor = Integer.parseInt(String.valueOf(R.color.emergency));
+                            } else if (holder.paper_valid_db.isChecked()) {
+                                dtype = ptype = "paper_valid";
+                                hexColor = Integer.parseInt(String.valueOf(R.color.paper_valid));
+                            } else if (holder.paper_valid_emergency_cb.isChecked()) {
+                                amount = 200;
+                                ptype = "paper_valid_emergency";
+                                dtype = "emergency_paper_valid";
+                                hexColor = Integer.parseInt(String.valueOf(R.color.paper_valid_emergency));
+                            } else if (holder.discount_cb.isChecked()) {
+                                try {
+                                    if (Integer.parseInt(holder.percent_txt.getText().toString()) > 100) {
+                                        Toast.makeText(context, "The discounted amount should not be more than 100%.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        amount = 200 - Integer.parseInt(holder.percent_txt.getText().toString()) * 2;
+                                        dtype = ptype = "discount";
+                                        hexColor = Integer.parseInt(String.valueOf(R.color.discount));
+                                    }
+                                } catch (Exception ex) {
+                                    Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            } else if (holder.cancel_cb.isChecked()) {
+                                dtype = ptype = "cancel";
+                                hexColor = Integer.parseInt(String.valueOf(R.color.cancel));
+                            } else if (holder.add_amount_cb.isChecked()) {
+                                amount = Integer.parseInt(holder.amount_edt_txt.getText().toString());
+                                dtype = ptype = "add_amount";
+                                hexColor = Integer.parseInt(String.valueOf(R.color.add_amount));
+                            }
+
+                            myDb.updatePatientDetail(Integer.parseInt(holder.id_txt.getText().toString()),
+                                    Integer.parseInt(holder.sr_no_txt.getText().toString()),
+                                    ptype,
+                                    hexColor,
+                                    holder.name_txt.getText().toString(),
+                                    holder.age_txt.getText().toString(),
+                                    amount);
+
+                            try {
+                                myDb.updateDayRecord(dtype, amount);
+                            } catch (Exception ex) {
+                                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+
+                            Toast.makeText(context, "Please refresh to reload the data.", Toast.LENGTH_SHORT).show();
+                            {
+                                holder.name_txt.setEnabled(false);
+                                holder.age_txt.setEnabled(false);
+                                holder.percent_txt.setEnabled(false);
+                                holder.amount_edt_txt.setEnabled(false);
+                                holder.normal_cb.setEnabled(false);
+                                holder.emergency_cb.setEnabled(false);
+                                holder.paper_valid_db.setEnabled(false);
+                                holder.paper_valid_emergency_cb.setEnabled(false);
+                                holder.discount_cb.setEnabled(false);
+                                holder.cancel_cb.setEnabled(false);
+                                holder.add_amount_cb.setEnabled(false);
+                                holder.check_btn.setEnabled(false);
+                            }
+                        }
+                    });
+
+                    builder.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        dialog.cancel();
+                    });
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 }
             }
         });
@@ -312,9 +426,27 @@ public class patient_adapter extends RecyclerView.Adapter<patient_adapter.myView
                 builder.setCancelable(false);
 
                 builder.setPositiveButton("Yes", (DialogInterface.OnClickListener) (dialog, which) -> {
-                    String deleteMethod = myDb.deletePatientRow(holder.id_txt.getText().toString());
+                    String type = null;
+                    if(holder.type_txt.getText().toString().equals("Normal")){
+                        type = "normal";
+                    } else if(holder.type_txt.getText().toString().equals("Emergency")){
+                        type = "emergency";
+                    } else if(holder.type_txt.getText().toString().equals("Paper Valid")){
+                        type = "paper_valid";
+                    } else if(holder.type_txt.getText().toString().equals("Paper Valid\nEmergency") ||
+                            holder.type_txt.getText().toString().equals("Paper Valid Emergency")){
+                        type = "emergency_paper_valid";
+                    } else if(holder.type_txt.getText().toString().equals("Discount")){
+                        type = "discount";
+                    } else if(holder.type_txt.getText().toString().equals("Cancel")){
+                        type = "cancel";
+                    } else if(holder.type_txt.getText().toString().equals("Amount")){
+                        type = "add_amount";
+                    }
+
+                    String deleteMethod = myDb.deletePatientRow(holder.id_txt.getText().toString(), myDb.getDate(), holder.sr_no_txt.getText().toString());
                     Toast.makeText(context, deleteMethod, Toast.LENGTH_SHORT).show();
-                    myDb.deleteDayRecord(holder.type_txt.getText().toString(), holder.amount_txt.getText().toString());
+                    myDb.deleteDayRecord(type, holder.amount_txt.getText().toString());
                 });
 
                 builder.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog, which) -> {

@@ -288,7 +288,7 @@ public class previous_patient_adapter extends RecyclerView.Adapter<previous_pati
         holder.delete_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String deleteMethod = myDb.deletePatientRow(holder.id_txt.getText().toString(), date);
+                String deleteMethod = myDb.deletePatientRow(holder.id_txt.getText().toString(), date, holder.sr_no_txt.getText().toString());
                 Toast.makeText(context, deleteMethod, Toast.LENGTH_SHORT).show();
                 myDb.deleteDayRecord(holder.type_txt.getText().toString(), holder.amount_txt.getText().toString(), date);
             }

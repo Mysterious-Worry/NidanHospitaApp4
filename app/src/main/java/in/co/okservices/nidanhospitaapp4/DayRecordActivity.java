@@ -11,7 +11,6 @@ import android.app.DatePickerDialog;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -28,8 +27,8 @@ import in.co.okservices.nidanhospitaapp4.data_models.day_record_madel;
 public class DayRecordActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    ImageButton select_btn, search_btn, search_by_month_btn, refresh_btn, get_pdf_btn;
-    EditText selected_date_txt;
+    ImageButton select_btn, search_btn, search_by_month_btn, refresh_btn, get_pdf_btn, select_date_1_btn, select_date_2_btn, search_between_2_dates_btn;
+    EditText selected_date_txt, selected_date_1_txt, selected_date_2_txt;
     private int mYear, mMonth, mDay;
     Cursor cursor;
     private static final int REQUEST_WRITE_STORAGE = 112;
@@ -47,36 +46,7 @@ public class DayRecordActivity extends AppCompatActivity {
         select_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog( DayRecordActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                try {
-                                    String sMonthOfYear, sDayOfMonth;
-                                    sMonthOfYear = Integer.toString(monthOfYear+1);
-                                    sDayOfMonth = Integer.toString(dayOfMonth);
-                                    if (sMonthOfYear.length() == 1 ) {
-                                        sMonthOfYear = "0" + String.valueOf(sMonthOfYear);
-                                    }
-                                    if (sDayOfMonth.length() < 2) {
-                                        sDayOfMonth = "0" + dayOfMonth;
-                                    }
-
-                                    String date = sDayOfMonth + "-" + (sMonthOfYear) + "-" + year;
-                                    selected_date_txt.setText(date);
-                                } catch(Exception ex){
-                                    Toast.makeText(DayRecordActivity.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.show();
+                setDateInEditText(selected_date_txt);
             }
         });
 
@@ -94,7 +64,7 @@ public class DayRecordActivity extends AppCompatActivity {
                 try {
                     String month = selected_date_txt.getText().toString().trim();
                     StringBuilder rmv = new StringBuilder(month);
-                    rmv = rmv.delete(7, 10);
+                    rmv = rmv.delete(0, 3);
                     selected_date_txt.setText(rmv.toString());
                     Cursor cursor = new MyDatabaseHelper(DayRecordActivity.this).fetchMonthDayData(rmv.toString());
                     loadData(cursor);
@@ -125,6 +95,38 @@ public class DayRecordActivity extends AppCompatActivity {
                 }
             }
         });
+
+        select_date_1_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setDateInEditText(selected_date_1_txt);
+            }
+        });
+
+        select_date_2_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setDateInEditText(selected_date_2_txt);
+            }
+        });
+
+        search_between_2_dates_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int id1 = new MyDatabaseHelper(DayRecordActivity.this).senderCell("_id", selected_date_1_txt.getText().toString());
+                int id2 = new MyDatabaseHelper(DayRecordActivity.this).senderCell("_id", selected_date_2_txt.getText().toString());
+
+                if(id1 > id2){
+                    // swapped
+                    int p = id1;
+                    id1 = id2;
+                    id2 = p;
+                }
+
+                cursor = new MyDatabaseHelper(DayRecordActivity.this).fetchBetweenDayData(String.valueOf(id1), String.valueOf(id2));
+                loadData(cursor);
+            }
+        });
     }
 
     private void initViews(){
@@ -133,7 +135,12 @@ public class DayRecordActivity extends AppCompatActivity {
         search_by_month_btn = (ImageButton)findViewById(R.id.search_by_month_btn);
         refresh_btn = (ImageButton)findViewById(R.id.refresh_btn);
         get_pdf_btn = (ImageButton)findViewById(R.id.get_pdf_btn);
+        select_date_1_btn = (ImageButton)findViewById(R.id.select_date_1_btn);
+        select_date_2_btn = (ImageButton)findViewById(R.id.select_date_2_btn);
+        search_between_2_dates_btn = (ImageButton)findViewById(R.id.search_between_2_dates_btn);
         selected_date_txt = (EditText)findViewById(R.id.selected_date_txt);
+        selected_date_1_txt = (EditText)findViewById(R.id.selected_date_1_txt);
+        selected_date_2_txt = (EditText)findViewById(R.id.selected_date_2_txt);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     }
 
@@ -162,5 +169,38 @@ public class DayRecordActivity extends AppCompatActivity {
         } catch(Exception ex) {
             Toast.makeText(DayRecordActivity.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void setDateInEditText(EditText editText){
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog( DayRecordActivity.this,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+                        try {
+                            String sMonthOfYear, sDayOfMonth;
+                            sMonthOfYear = Integer.toString(monthOfYear+1);
+                            sDayOfMonth = Integer.toString(dayOfMonth);
+                            if (sMonthOfYear.length() == 1 ) {
+                                sMonthOfYear = "0" + String.valueOf(sMonthOfYear);
+                            }
+                            if (sDayOfMonth.length() < 2) {
+                                sDayOfMonth = "0" + dayOfMonth;
+                            }
+
+                            String date = sDayOfMonth + "-" + (sMonthOfYear) + "-" + year;
+                            editText.setText(date);
+                        } catch(Exception ex){
+                            Toast.makeText(DayRecordActivity.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, mYear, mMonth, mDay);
+        datePickerDialog.show();
     }
 }
